@@ -148,4 +148,7 @@ public class MongoDBUtil {
         return cur;
        
     }
+    
+    public void autoIncrement(){
+    }
 }

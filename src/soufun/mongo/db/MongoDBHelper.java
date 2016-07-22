@@ -12,7 +12,7 @@ import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCursor;
 
-public class MongoDBHelper<T> {
+public class MongoDBHelper {
 
 	private MongoDBUtil dbManagerNew = null;
 
@@ -21,11 +21,12 @@ public class MongoDBHelper<T> {
 	}
 
 	/**
+	 * @param <T>
 	 * @param collectionName
 	 * @param list
 	 * @return
 	 */
-	public void add(String tableName, List<T> list) {
+	public <T> void add(String tableName, List<T> list) {
 		try {
 			List<Document> documents = new ArrayList<Document>();
 			for (T t : list) {
@@ -41,13 +42,14 @@ public class MongoDBHelper<T> {
 
 	/**
 	 * 添加
+	 * @param <T>
 	 * 
 	 * @param tableName
 	 *            表名
 	 * @param t
 	 *            实体类
 	 */
-	public void add(String tableName, T t) {
+	public <T> void add(String tableName, T t) {
 		try {
 			Document doc = entityToDocument(t);
 			dbManagerNew.add(tableName, doc);
@@ -58,16 +60,18 @@ public class MongoDBHelper<T> {
 	}
 
 	/**
+	 * @param <T>
 	 * @param tableName
 	 * @param t
 	 * @return
 	 */
-	public boolean delete(String tableName, T t) {
+	public <T> boolean delete(String tableName, T t) {
 		Bson bson = entityToDocument(t);
 		return dbManagerNew.delete(tableName, bson);
 	}
 
 	/**
+	 * @param <T>
 	 * @param tableName
 	 * @param t1
 	 *            原先的model
@@ -75,7 +79,7 @@ public class MongoDBHelper<T> {
 	 *            更改后的model
 	 * @return
 	 */
-	public boolean update(String tableName, T t1, T t2) {
+	public <T> boolean update(String tableName, T t1, T t2) {
 		Bson bson1 = entityToDocument(t1);
 		Bson bson2 = new Document("$set", entityToDocument(t2));
 		return dbManagerNew.update(tableName, bson1, bson2);
@@ -83,6 +87,7 @@ public class MongoDBHelper<T> {
 	}
 
 	/**
+	 * @param <T>
 	 * @param tableName
 	 *            表名
 	 * @param condition
@@ -97,7 +102,7 @@ public class MongoDBHelper<T> {
 	 *            查询返回的类型
 	 * @return
 	 */
-	private List<T> query(String tableName, T condition, int pagesize, int curpage, Bson orderby, Class<T> cls) {
+	private <T> List<T> query(String tableName, T condition, int pagesize, int curpage, Bson orderby, Class<T> cls) {
 		try {
 			int skipNum = (curpage - 1) * pagesize;
 			Bson conBson = new Document();
@@ -126,11 +131,12 @@ public class MongoDBHelper<T> {
 
 	/**
 	 * 查询
+	 * @param <T>
 	 * 
 	 * @param inModel
 	 * @return
 	 */
-	public List<T> query(InModel<T> inModel) {
+	public <T> List<T> query(InModel<T> inModel) {
 		List<Map<String, String>> orderList = inModel.getOrder();
 		Document order = new Document();
 		T condition = null;
@@ -151,7 +157,7 @@ public class MongoDBHelper<T> {
 
 	}
 
-	public int getTotalCount(String collectionName, T condition) {
+	public <T> int getTotalCount(String collectionName, T condition) {
 		Document document = null;
 		if (condition != null) {
 			document = entityToDocument(condition);
@@ -159,7 +165,7 @@ public class MongoDBHelper<T> {
 		return dbManagerNew.getTotalCount(collectionName, document);
 	}
 
-	public List<T> queryAll(String collectionName,Class<T> cls) {
+	public <T> List<T> queryAll(String collectionName,Class<T> cls) {
 		MongoCursor<Document> cursor= dbManagerNew.queryAll(collectionName);
 		List<T> list = new ArrayList<T>();
 		while (cursor.hasNext()) {
@@ -172,6 +178,7 @@ public class MongoDBHelper<T> {
 
 	/**
 	 * 实体类转Document
+	 * @param <T>
 	 * 
 	 * @param t
 	 *            实体类
@@ -180,7 +187,7 @@ public class MongoDBHelper<T> {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public Document entityToDocument(T t) {
+	public <T> Document entityToDocument(T t) {
 		Document doc = null;
 		try {
 			Class cls = t.getClass();
@@ -207,12 +214,13 @@ public class MongoDBHelper<T> {
 
 	/**
 	 * Document转实体类
+	 * @param <T>
 	 * 
 	 * @param doc
 	 * @param cls
 	 * @return
 	 */
-	public T documentToEntity(Document doc, Class<T> cls) {
+	public <T> T documentToEntity(Document doc, Class<T> cls) {
 		T t = null;
 		try {
 			t = cls.newInstance();

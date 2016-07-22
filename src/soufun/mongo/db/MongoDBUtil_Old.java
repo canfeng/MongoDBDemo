@@ -24,6 +24,7 @@ public class MongoDBUtil_Old {
 	 * @param pswd
 	 * @return
 	 */
+	@SuppressWarnings({ "deprecation", "resource" })
 	public  MongoDBUtil_Old() {
 
 		MongoClientOptions.Builder build = new MongoClientOptions.Builder();  
